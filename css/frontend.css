@@ -1,0 +1,12 @@
+div.mod_bcstats{font-size:10px;border:1px solid #336699;-moz-box-shadow: 5px 5px 5px #ccc;-webkit-box-shadow: 5px 5px 5px #ccc;box-shadow: 5px 5px 5px #ccc;-webkit-border-radius:5px;-moz-border-radius:5px;-khtml-border-radius:5px;border-radius:5px;}
+
+div.mod_bcstats.vertical{width:120px;padding:0;}
+div.mod_bcstats.vertical div.mod_bcstats_banner{padding:0 10px;}
+div.mod_bcstats.vertical div.mod_bcstats_number{padding:5px 0 5px 15px;}
+
+div.mod_bcstats.horizontal{width:100%;height:20px;border:1px solid #336699;}
+div.mod_bcstats.horizontal div.mod_bcstats_banner{background-color:#336699;display:inline-block;height:18px;width:17%;}
+div.mod_bcstats.horizontal div.mod_bcstats_number{display:inline-block;width:7.45%;}
+
+div.mod_bcstats_banner{background-color:#336699;color:#fff;font-weight:900;}
+div.mod_bcstats_number{}
