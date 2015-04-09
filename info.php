@@ -39,7 +39,7 @@ if (defined('CAT_PATH')) {
     if (!$inc) trigger_error(sprintf("[ <b>%s</b> ] Can't include class.secure.php!", $_SERVER['SCRIPT_NAME']), E_USER_ERROR);
 }
 
-$module_name = "BCStats";
+$module_name = "BlackCat CMS Visitor Statistics";
 $module_directory = "BCStats";
 $module_type = "module";
 $module_function = "tool";
