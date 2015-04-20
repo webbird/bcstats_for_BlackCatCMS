@@ -2,12 +2,12 @@
     <form id="change_map">
         <label for="map">{translate('View')}:</label>
         <select name="map" id="map">
-            <option value="europe">{translate('Europe')}</option>
-            <option value="africa">{translate('Africa')}</option>
-            <option value="america">{translate('America')}</option>
-            <option value="asia">{translate('Asia')}</option>
-            <option value="australia">{translate('Australia')}</option>
-            <option value="world">{translate('World')}</option>
+            <option value="europe"{if $settings.map_view == 'europe'} selected="selected"{/if}>{translate('Europe')}</option>
+            <option value="africa"{if $settings.map_view == 'africa'} selected="selected"{/if}>{translate('Africa')}</option>
+            <option value="america"{if $settings.map_view == 'america'} selected="selected"{/if}>{translate('America')}</option>
+            <option value="asia"{if $settings.map_view == 'asia'} selected="selected"{/if}>{translate('Asia')}</option>
+            <option value="australia"{if $settings.map_view == 'australia'} selected="selected"{/if}>{translate('Australia')}</option>
+            <option value="world"{if $settings.map_view == 'world'} selected="selected"{/if}>{translate('World')}</option>
         </select>
     </form><br />
     <div id="mod_bcstats_worldmap">
@@ -20,15 +20,15 @@
     var width  = div.width();
 
     var map   = kartograph.map('#mod_bcstats_worldmap', width, width);
-    var scale = chroma.scale('Blues');
+    var scale = chroma.scale('{$settings.chroma_scale}');
     var countries;
 
     $.fn.qtip.defaults.style.classes = 'qtip-bootstrap';
     $.fn.qtip.defaults.style.def = false;
 
     $.getJSON(CAT_URL + '/modules/BCStats/ajax/ajax_get_countries.php', function(countries) {
-        var scale = chroma.scale('Blues').domain(countries, 7, 'quantiles', 'count');
-        $.get(CAT_URL + '/modules/BCStats/js/europe.svg', function(svg) {
+        var view  = $('select#map option:selected').val();
+        $.get(CAT_URL + '/modules/BCStats/js/' + view + '.svg', function(svg) {
             load_map(map,svg,countries);
         }).complete(function() {
             $('#mod_bcstats_overlay').hide();
@@ -46,6 +46,7 @@
     });
 
     function load_map(map,svg,countries) {
+        var scale = chroma.scale('{$settings.chroma_scale}').domain(countries, 7, 'quantiles', 'count');
         map.setMap(svg);
         map.addLayer('countries', {
             styles: {

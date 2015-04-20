@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS `cat_mod_bcstats_countries` (
   `iso` char(2) NOT NULL,
   `country` varchar(50) NOT NULL,
   `count` int(11) unsigned NOT NULL,
-  `lastseen` varchar(50) NOT NULL
+  `lastseen` varchar(50) NOT NULL,
+  UNIQUE INDEX `year_iso` (`year`, `iso`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `cat_mod_bcstats_devices` (

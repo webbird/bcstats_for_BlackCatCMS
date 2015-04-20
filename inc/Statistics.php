@@ -25,12 +25,15 @@
 
 if (!class_exists('BCStats_Statistics'))
 {
+    require_once CAT_PATH.'/modules/lib_chartjs/inc/Chart.php';
+
     class BCStats_Statistics
     {
         private static $localpath;
         private static $vendorpath;
         private static $instance;
-        private static $bc;       // accessor to Browscap
+        private static $bc;                 // accessor to Browscap
+        private static $settings = NULL;
 
         public static function getInstance()
         {
@@ -65,7 +68,7 @@ if (!class_exists('BCStats_Statistics'))
         {
             global $parser;
             $dashboard = CAT_Helper_Dashboard::renderDashboard('BCStats',false);
-            $parser->output('tool.tpl',array('dashboard'=>$dashboard));
+            $parser->output('tool.tpl',array('dashboard'=>$dashboard,'settings'=>self::getSettings()));
         }   // end function showWidgets()
 
         /**
@@ -107,6 +110,28 @@ if (!class_exists('BCStats_Statistics'))
             if($record) return $record;
             return $ua;
         }   // end function getBrowserDetails()
+
+        /**
+         *
+         * @access public
+         * @return
+         **/
+        public static function getSettings()
+        {
+            if(!self::$settings)
+            {
+                $db       = CAT_Helper_DB::getInstance();
+                $data     = $db->query(
+                    'SELECT * FROM `:prefix:mod_bcstats_settings`'
+                )->fetchAll();
+                self::$settings = array();
+                foreach($data as $item)
+                {
+                    self::$settings[$item['set_name']] = $item['set_content'];
+                }
+            }
+            return self::$settings;
+        }   // end function getSettings()
 
         /**
          *

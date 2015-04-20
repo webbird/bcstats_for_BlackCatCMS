@@ -46,25 +46,43 @@ $widget_settings = array(
 );
 
 global $parser;
+require_once dirname(__FILE__).'/../inc/Statistics.php';
 
 $db       = CAT_Helper_DB::getInstance();
 $browsers = $db->query(
     'SELECT * FROM `:prefix:mod_bcstats_browsers` WHERE `year`=YEAR(NOW()) ORDER BY `count` DESC, `name` ASC, `version` DESC'
 )->fetchAll();
 
-$result = CAT_Helper_Chart::prepareData(
-    $browsers,
-    'name',
+$chart    = NULL;
+$settings = BCStats_Statistics::getSettings();
+
+require_once CAT_PATH.'/modules/lib_chartjs/inc/Chart.php';
+$result = lib_chartjs_Chart::prepareData(
     array(
-        'lastseen' => 'CAT_Helper_DateTime::getDateTime'
-    ),
-    array(
-        'summarize' => array( 'key' => 'count', 'return_as' => 'sum' ),
-        'title'     => array( 'name', 'maker' )
+        'data'     => $browsers,
+        'group_by' => 'name',
+        'converts' => array(
+            'lastseen'  => 'CAT_Helper_DateTime::getDateTime'
+        ),
+        'internals' => array(
+            'summarize' => array( 'key' => 'count', 'return_as' => 'sum' ),
+            'title'     => array( 'key' => 'name', 'additionals' => array('maker') )
+        )
     )
 );
 
-$chart = CAT_Helper_Chart::getChart($result,'browserChart');
+if($settings['show_charts'] == 'Y')
+{
+    $chart = lib_chartjs_Chart::getPiechart(
+        array(
+            'data'        => $result,
+            'id'          => 'browserChart',
+            'color_scale' => $settings['chroma_scale'],
+            'color_by'    => 'count',
+            'group_by'    => 'name',
+        )
+    );
+}
 
 $parser->setPath(dirname(__FILE__).'/../templates/default');
 $parser->output('browsers.tpl',array('browsers'=>$result,'chart'=>$chart));

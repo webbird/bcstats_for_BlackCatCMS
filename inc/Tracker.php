@@ -95,9 +95,6 @@ if (!class_exists('BCStats_Tracker'))
         {
             $ip   = self::getIP();
             $db   = CAT_Helper_DB::getInstance();
-echo "<textarea style=\"width:100%;height:200px;color:#000;background-color:#fff;\">";
-print_r( $_SERVER );
-echo "</textarea>";
 $ip = '60.53.228.88';
             // don't track localhost
             if($ip && !( $ip == '127.0.0.1' || substr($ip,0,2) == '0::' ) )
@@ -281,7 +278,6 @@ print($record->location->longitude . "\n"); // -93.2323
          **/
         private static function is_reload()
         {
-return false;
             if (version_compare(phpversion(), '5.4', '<'))
             {
                 if(session_id() == '')
@@ -300,8 +296,14 @@ return false;
             }
             if(isset($_SESSION['_bcstats_']))
             {
-                // count visitor again after 1 hour
-                if($_SESSION['_bcstats_'] < ( time() - 3600 ) )
+                $db       = CAT_Helper_DB::getInstance();
+                $data     = $db->query(
+                    'SELECT `set_content` FROM `:prefix:mod_bcstats_settings` WHERE `set_name`=?',
+                    array('reload_time')
+                )->fetchAll();
+                $reload_time = $data[0]['set_content'];
+                // count visitor again after reload time
+                if($reload_time && $_SESSION['_bcstats_'] < ( time() - $reload_time ) )
                 {
                     $_SESSION['_bcstats_'] = time();
                     return false;

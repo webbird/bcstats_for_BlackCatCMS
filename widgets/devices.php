@@ -46,25 +46,41 @@ $widget_settings = array(
 );
 
 global $parser;
+require_once dirname(__FILE__).'/../inc/Statistics.php';
 
 $db       = CAT_Helper_DB::getInstance();
 $devices  = $db->query(
     'SELECT * FROM `:prefix:mod_bcstats_devices` WHERE `year`=YEAR(NOW()) ORDER BY `count` DESC, `platform` ASC, `type` DESC'
 )->fetchAll();
 
-$result = CAT_Helper_Chart::prepareData(
-    $devices,
-    'type',
+$chart    = NULL;
+$settings = BCStats_Statistics::getSettings();
+
+require_once CAT_PATH.'/modules/lib_chartjs/inc/Chart.php';
+$result = lib_chartjs_Chart::prepareData(
     array(
-        'lastseen' => 'CAT_Helper_DateTime::getDateTime'
-    ),
-    array(
-        'summarize' => array( 'key' => 'count', 'return_as' => 'sum' ),
-        'title'     => array( 'type' )
+        'data'     => $devices,
+        'group_by' => 'type',
+        'converts' => array(
+            'lastseen' => 'CAT_Helper_DateTime::getDateTime'
+        ),
+        'internals' => array(
+            'summarize' => array( 'key' => 'count', 'return_as' => 'sum' ),
+            'title'     => array( 'key' => 'type' )
+        )
     )
 );
 
-$chart = CAT_Helper_Chart::getChart($result,'deviceChart');
+if($settings['show_charts'] == 'Y')
+{
+    $chart = lib_chartjs_Chart::getPiechart(
+        array(
+            'data'        => $result,
+            'id'          => 'deviceChart',
+            'color_scale' => $settings['chroma_scale']
+        )
+    );
+}
 
 $parser->setPath(dirname(__FILE__).'/../templates/default');
 $parser->output('devices.tpl',array('devices'=>$result,'chart'=>$chart));

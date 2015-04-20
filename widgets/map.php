@@ -46,6 +46,9 @@ $widget_settings = array(
 );
 
 global $parser;
-$tpl_data = array();
+require_once dirname(__FILE__).'/../inc/Statistics.php';
 
-$parser->output('world.tpl',$tpl_data);
+$tpl_data['settings'] = BCStats_Statistics::getSettings();
+
+$parser->setPath(dirname(__FILE__).'/../templates/default');
+$parser->output('map.tpl',$tpl_data);
