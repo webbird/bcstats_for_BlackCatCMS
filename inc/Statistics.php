@@ -88,8 +88,9 @@ if (!class_exists('BCStats_Statistics'))
                 // set local updater that extends \Crossjoin\Browscap\Updater\AbstractUpdater or
                 // \Crossjoin\Browscap\Updater\AbstractUpdaterRemote
                 $updater = new \Crossjoin\Browscap\Updater\Local();
-                $updater->setOption('LocalFile', CAT_PATH.'/temp/cache/browscap.ini');
+                $updater->setOption('LocalFile', CAT_PATH.'/temp/cache/full_php_browscap.ini');
                 \Crossjoin\Browscap\Browscap::setUpdater($updater);
+                //\Crossjoin\Browscap\Browscap::setDatasetType(\Crossjoin\Browscap\Browscap::DATASET_TYPE_LARGE);
                 self::$bc = new \Crossjoin\Browscap\Browscap();
             }
 
@@ -157,8 +158,8 @@ if (!class_exists('BCStats_Statistics'))
                     if(is_object($ua))
                     {
                         // ----- save browser stats -----
-                        $sql = 'INSERT INTO `:prefix:mod_bcstats_browsers` ( `year`, `name`, `version`, `maker`, `count`, `lastseen` ) '
-                             . 'VALUES ( ?, ?, ?, ?, "1", ? ) '
+                        $sql = 'INSERT INTO `:prefix:mod_bcstats_browsers` ( `year`, `name`, `version`, `maker`, `type`, `count`, `lastseen` ) '
+                             . 'VALUES ( ?, ?, ?, ?, ?, "1", ? ) '
                              . 'ON DUPLICATE KEY UPDATE `count`=`count`+1;';
 
                         $db->query($sql,array(
@@ -166,6 +167,7 @@ if (!class_exists('BCStats_Statistics'))
                             $ua->browser,
                             $ua->version,
                             $ua->browser_maker,
+                            $ua->browser_type,
                             $line['timestamp']
                         ));
 

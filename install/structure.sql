@@ -1,11 +1,12 @@
-CREATE TABLE IF NOT EXISTS `cat_mod_bcstats_browsers` (
-  `year` char(4) NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `version` varchar(50) NOT NULL,
-  `maker` varchar(50) NOT NULL,
-  `count` int(11) unsigned NOT NULL DEFAULT '1',
-  `lastseen` varchar(50) NOT NULL,
-  UNIQUE KEY `year_name_version` (`year`,`name`,`version`)
+CREATE TABLE `cat_mod_bcstats_browsers` (
+	`year` CHAR(4) NOT NULL,
+	`name` VARCHAR(50) NOT NULL,
+	`version` VARCHAR(50) NOT NULL,
+	`type` VARCHAR(50) NULL DEFAULT NULL,
+	`maker` VARCHAR(50) NOT NULL,
+	`count` INT(11) UNSIGNED NOT NULL DEFAULT '1',
+	`lastseen` VARCHAR(50) NOT NULL,
+	UNIQUE INDEX `year_name_version` (`year`, `name`, `version`, `type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `cat_mod_bcstats_countries` (
