@@ -155,6 +155,7 @@ if(!function_exists('render_widget_BCStats_settings'))
 
 if( CAT_Helper_Addons::versionCompare(CAT_VERSION,'1.2','<') )
 {
+    $widget_name = CAT_Helper_I18n::getInstance()->translate('Settings');
     echo CAT_Helper_I18n::getInstance()->translate('To change the settings, use the BCStats Admin Tool!');
     return;
 }

@@ -69,6 +69,7 @@ if(!function_exists('render_widget_BCStats_visitors_per_page'))
             foreach($visitors as &$item)
             {
                 $item['lastseen'] = CAT_Helper_DateTime::getDateTime($item['lastseen']);
+                $item['link']     = CAT_Helper_Page::getLink($item['page_id']);
             }
         }
 

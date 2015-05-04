@@ -41,6 +41,7 @@ if (defined('CAT_PATH')) {
 
 if( CAT_Helper_Addons::versionCompare(CAT_VERSION,'1.2','<') )
 {
+    $widget_name = CAT_Helper_I18n::getInstance()->translate('Widget configuration file');
     echo 'Sorry, this widget requires BlackCat CMS v1.2';
     return;
 }
