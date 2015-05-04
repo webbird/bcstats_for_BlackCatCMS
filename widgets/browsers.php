@@ -40,49 +40,66 @@ if (defined('CAT_PATH')) {
 }
 
 $widget_settings = array(
-    'allow_global_dashboard' => false,
+    'allow_global_dashboard' => true,
     'widget_title'           => CAT_Helper_I18n::getInstance()->translate('Browsers'),
     'preferred_column'       => 1
 );
 
-global $parser;
-require_once dirname(__FILE__).'/../inc/Statistics.php';
-
-$db       = CAT_Helper_DB::getInstance();
-$browsers = $db->query(
-    'SELECT * FROM `:prefix:mod_bcstats_browsers` WHERE `year`=YEAR(NOW()) ORDER BY `count` DESC, `name` ASC, `version` DESC'
-)->fetchAll();
-
-$chart    = NULL;
-$settings = BCStats_Statistics::getSettings();
-
-require_once CAT_PATH.'/modules/lib_chartjs/inc/Chart.php';
-$result = lib_chartjs_Chart::prepareData(
-    array(
-        'data'     => $browsers,
-        'group_by' => 'name',
-        'converts' => array(
-            'lastseen'  => 'CAT_Helper_DateTime::getDateTime'
-        ),
-        'internals' => array(
-            'summarize' => array( 'key' => 'count', 'return_as' => 'sum' ),
-            'title'     => array( 'key' => 'name', 'additionals' => array('maker') )
-        )
-    )
-);
-
-if($settings['show_charts'] == 'Y')
+if(!function_exists('render_widget_BCStats_browsers'))
 {
-    $chart = lib_chartjs_Chart::getPiechart(
-        array(
-            'data'        => $result,
-            'id'          => 'browserChart',
-            'color_scale' => $settings['chroma_scale'],
-            'color_by'    => 'count',
-            'group_by'    => 'name',
-        )
-    );
+    function render_widget_BCStats_browsers()
+    {
+        global $parser;
+        require_once dirname(__FILE__).'/../inc/Statistics.php';
+
+        $db       = CAT_Helper_DB::getInstance();
+        $browsers = $db->query(
+            'SELECT * FROM `:prefix:mod_bcstats_browsers` WHERE `year`=YEAR(NOW()) AND `type`<>? ORDER BY `count` DESC, `name` ASC, `version` DESC',
+            array('Bot/Crawler')
+        )->fetchAll();
+
+        $chart    = NULL;
+        $settings = BCStats_Statistics::getSettings();
+
+        require_once CAT_PATH.'/modules/lib_chartjs/inc/Chart.php';
+        $result = lib_chartjs_Chart::prepareData(
+            array(
+                'data'     => $browsers,
+                'group_by' => 'name',
+                'converts' => array(
+                    'lastseen'  => 'CAT_Helper_DateTime::getDateTime'
+                ),
+                'internals' => array(
+                    'summarize' => array( 'key' => 'count', 'return_as' => 'sum' ),
+                    'title'     => array( 'key' => 'name', 'additionals' => array('maker') )
+                )
+            )
+        );
+
+        if($settings['show_charts'] == 'Y')
+        {
+                $type  = $settings['charttype'];
+                $func  = 'get'.ucfirst($type).'chart';
+                $chart = lib_chartjs_Chart::$func(
+                array(
+                    'data'        => $result,
+                    'id'          => 'browserChart',
+                    'color_scale' => $settings['chroma_scale'],
+                    'color_by'    => 'count',
+                    'group_by'    => 'name',
+                )
+            );
+        }
+
+        $parser->setPath(dirname(__FILE__).'/../templates/default');
+        return $parser->get('browsers.tpl',array('browsers'=>$result,'chart'=>$chart));
+    }
 }
 
-$parser->setPath(dirname(__FILE__).'/../templates/default');
-$parser->output('browsers.tpl',array('browsers'=>$result,'chart'=>$chart));
+if( CAT_Helper_Addons::versionCompare(CAT_VERSION,'1.2','<') )
+{
+    $widget_name = CAT_Helper_I18n::getInstance()->translate('Browsers');
+    require_once dirname(__FILE__).'/../inc/Statistics.php';
+    BCStats_Statistics::addFooterFiles();
+    echo render_widget_BCStats_browsers();
+}

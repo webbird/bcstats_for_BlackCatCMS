@@ -95,7 +95,7 @@ if (!class_exists('BCStats_Tracker'))
         {
             $ip   = self::getIP();
             $db   = CAT_Helper_DB::getInstance();
-
+$ip = '139.2.51.71';
             // don't track localhost
             if($ip && !( $ip == '127.0.0.1' || substr($ip,0,2) == '0::' ) )
             {

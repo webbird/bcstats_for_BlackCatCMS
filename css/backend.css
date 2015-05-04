@@ -1,14 +1,15 @@
-.mod_bcstats li.fc_widget_wrapper table{width:100%;}
-.mod_bcstats th{background-color:#f2f2f2;font-weight:900;}
+.mod_bcstats hr{border:1px solid #aaa;}
+.mod_bcstats table{width:100%;}
+.mod_bcstats th{background-color:#f2f2f2;font-weight:900;text-align:left;}
 .mod_bcstats_label{padding:2px 5px;background-color:#f2f2f2;}
 .mod_bcstats_content{padding:2px 5px}
 .mod_bcstats_left{font-size:0.9em;}
 .mod_bcstats_right{float:right;font-size:0.9em;font-weight:900;}
 /* Forms */
-.fc_widget_content label{display:inline-block;width:50%;font-weight:900;}
-.fc_widget_content form span{font-style:italic;font-size:0.8em;}
+.mod_bcstats .fc_widget_content label{display:inline-block;width:50%;font-weight:900;}
+.mod_bcstats .fc_widget_content form span{font-style:italic;font-size:0.8em;}
 /* UI Accordion */
-.mod_bcstats .ui-accordion-content{font-size:0.8em;font-style:italic;color:#a0a0a0;}
+.bcstats_accordion .ui-accordion-content{font-size:0.8em;font-style:italic;color:#a0a0a0;}
 /* Chart.js legend plugin */
 .mod_bcstats .legend{float:right;font-size:0.7em;}
 .mod_bcstats .legend .title{display: block;margin-bottom: 0.5em;line-height: 1.2em;padding: 0 0.3em;}
@@ -18,17 +19,20 @@
 .mod_bcstats #mod_bcstats_overlay{background-color:#000;opacity:0.7;font-size:3em;font-weight:bold;text-align:center;padding-top:48%;bottom:0;left:0;position:absolute;right:0;top:0;z-index:9;}
 html body.fc_gradient1 div#fc_content_container div#fc_main_content div.fc_tool div.mod_bcstats ul.fc_widgets.fc_dashboard_sortable li.fc_widget_wrapper.clearfix div#mod_bcstats_worldmap.kartograph svg{position:relative !important;}
 /* Browser sprite */
-.browser_sprite{background:transparent url(sprite.png) left center no-repeat;display:inline-block;width:16px;height:16px;vertical-align:middle;}
-.Firefox{background-position:-528px;}
-.IE{background-position:-608px;}
-.Iron{background-posion:0px;}
+.mod_bcstats .browser_sprite{background:transparent url(sprite.png) left center no-repeat;display:inline-block;width:16px;height:16px;vertical-align:middle;}
+.mod_bcstats .Firefox{background-position:-528px;}
+.mod_bcstats .IE{background-position:-608px;}
+.mod_bcstats .Iron{background-posion:0px;}
 /* Devices sprite */
-.devices_sprite{background:transparent url(devices_sprite.png) left center no-repeat;display:inline-block;width:16px;height:16px;vertical-align:middle;}
-.Desktop{background-position:0;}
-.Mobile{background-position:-16px;}
-.Phone{background-position:-32px;}
+.mod_bcstats .devices_sprite{background:transparent url(devices_sprite.png) left center no-repeat;display:inline-block;width:16px;height:16px;vertical-align:middle;}
+.mod_bcstats .Desktop{background-position:0;}
+.mod_bcstats .Mobile{background-position:-16px;}
+.mod_bcstats .Phone{background-position:-32px;}
 /* calendar */
-div.fc_widget_content table.cal_month{width:600px;}
-div.fc_widget_content table tr th{width:14%}
-div.fc_widget_content table tr td,div.fc_widget_content table tr th{text-align:right;border:1px solid #aaa;padding:5px;}
-div.fc_widget_content table tr td.has_data{background-color:#FFFF99;}
+.mod_bcstats div.fc_widget_content table.cal_month{width:600px;}
+.mod_bcstats div.fc_widget_content table tr th{width:14%}
+.mod_bcstats div.fc_widget_content table tr td,.mod_bcstats div.fc_widget_content table tr th{text-align:right;border:1px solid #aaa;padding:5px;}
+.mod_bcstats div.fc_widget_content table tr td.has_data{background-color:#FFFF99;}
+
+/* for BC < v1.2 */
+.mod_bcstats .fc_widget_content{box-shadow:none;}

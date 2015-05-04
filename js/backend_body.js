@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-    $( "div.mod_bcstats div.fc_widget_content.accordion" ).accordion({
+    $( ".bcstats_accordion" ).accordion({
         collapsible: true,
         active: false
     });

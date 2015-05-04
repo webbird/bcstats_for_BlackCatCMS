@@ -40,121 +40,151 @@ if (defined('CAT_PATH')) {
 }
 
 $widget_settings = array(
-    'allow_global_dashboard' => false,
+    'allow_global_dashboard' => true,
     'widget_title'           => CAT_Helper_I18n::getInstance()->translate('Visitors per month'),
     'preferred_column'       => 1
 );
 
-global $parser;
-require_once dirname(__FILE__).'/../inc/Statistics.php';
-
-$db       = CAT_Helper_DB::getInstance();
-$lang     = CAT_Helper_I18n::getInstance();
-$from     = new DateTime('first day of this month');
-$to       = new DateTime('last day of this month');
-$visitors = $db->query(
-    'SELECT * FROM `:prefix:mod_bcstats_visitors` WHERE `date` BETWEEN ? AND ?',
-    array( $from->format('Y-m-d'), $to->format('Y-m-d') )
-)->fetchAll();
-
-$month   = CAT_Helper_Validate::sanitizeGet('month') ?: date('m');
-$year    = CAT_Helper_Validate::sanitizeGet('year')  ?: date('Y');
-$days    = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-$first   = gmmktime(0,0,0,$month,1,$year);
-$weekday = gmstrftime('%w',$first);
-$set     = array();
-$labels  = range(1,$days);
-
-// get all years we have data for
-$oldest = $db->query(
-    'SELECT `date` FROM `:prefix:mod_bcstats_visitors` ORDER BY `date` ASC LIMIT 1'
-)->fetchAll();
-$latest = $db->query(
-    'SELECT `date` FROM `:prefix:mod_bcstats_visitors` ORDER BY `date` DESC LIMIT 1'
-)->fetchAll();
-
-$oldest_date = new DateTime($oldest[0]['date']);
-$latest_date = new DateTime($latest[0]['date']);
-$years       = range($oldest_date->format('Y'),$latest_date->format('Y'));
-$months      = array();
-
-foreach(range(1,12) as $mon)
+if(!function_exists('render_widget_BCStats_visitors_per_month'))
 {
-    $months[$mon] = strftime('%B',gmmktime(0,0,0,$mon,1,$year));
-}
-
-foreach(range(1,$days) as $day)
-{
-    $date  = new DateTime($day.'.'.$month.'.'.$year);
-    $items = CAT_Helper_Array::ArrayFilterByKey($visitors, 'date', $date->format('Y-m-d'));
-    if(is_array($items) && count($items))
+    function render_widget_BCStats_visitors_per_month()
     {
-        $set[$day] = $items[0]['count'];
-    }
-    else
-    {
-        $set[$day] = 0;
-    }
-}
+        global $parser;
+        require_once dirname(__FILE__).'/../inc/Statistics.php';
 
-$chart    = NULL;
-$output   = NULL;
-$settings = BCStats_Statistics::getSettings();
+        $db       = CAT_Helper_DB::getInstance();
+        $lang     = CAT_Helper_I18n::getInstance();
 
-if($settings['show_charts'] == 'Y')
-{
-    require_once CAT_PATH.'/modules/lib_chartjs/inc/Chart.php';
-    $chart = '        <span class="monthname">'.CAT_Helper_I18n::getInstance()->translate(strftime('%B',time())).' '.$year.'</span><br />'
-           . lib_chartjs_Chart::getLinechart(array('datasets'=>array('Visitors'=>$set)),'visitorsChart',$labels,$settings['chroma_scale']);
-    if(CAT_Helper_Validate::sanitizeGet('_cat_ajax'))
-    {
-        echo json_encode(array('type'=>'chart','content'=>$chart));
-        exit();
-    }
-}
-else
-{
-    // Sunday is 0, so we do some math for Monday as first day of week
-    $weekday = ($weekday + 7 - 1) % 7;
+        $month   = CAT_Helper_Validate::sanitizeGet('month') ?: date('m');
+        $year    = CAT_Helper_Validate::sanitizeGet('year')  ?: date('Y');
+        $days    = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+        $first   = gmmktime(0,0,0,$month,1,$year);
+        $weekday = gmstrftime('%w',$first);
+        $set     = array();
+        $labels  = range(1,$days);
 
-    $output = '<tr>';
-    if($weekday >= 1 )
-        $output .= '<td colspan="'.$weekday.'" class="before">&nbsp;</td>';
-    $day_of_week = $weekday;
+        $from     = new DateTime();
+        $from->setTimestamp($first);
 
-    foreach($set as $day => $count)
-    {
-        if($day_of_week == 7)
+        $to       = clone $from;
+        $to->modify('last day of this month');
+
+        $visitors = $db->query(
+            'SELECT * FROM `:prefix:mod_bcstats_visitors` WHERE `date` BETWEEN ? AND ?',
+            array( $from->format('Y-m-d'), $to->format('Y-m-d') )
+        )->fetchAll();
+
+        // get all years we have data for
+        $oldest = $db->query(
+            'SELECT `date` FROM `:prefix:mod_bcstats_visitors` ORDER BY `date` ASC LIMIT 1'
+        )->fetchAll();
+        $latest = $db->query(
+            'SELECT `date` FROM `:prefix:mod_bcstats_visitors` ORDER BY `date` DESC LIMIT 1'
+        )->fetchAll();
+
+        if(!isset($oldest[0]) || !isset($oldest[0]['date'])) $oldest[0]['date'] = strftime('%Y-%m-%d',time());
+        if(!isset($latest[0]) || !isset($latest[0]['date'])) $latest[0]['date'] = $oldest[0]['date'];
+
+        $oldest_date = new DateTime($oldest[0]['date']);
+        $latest_date = new DateTime($latest[0]['date']);
+        $years       = range($oldest_date->format('Y'),$latest_date->format('Y'));
+        $months      = array();
+
+        foreach(range(1,12) as $mon)
         {
-            $output .= '</tr><tr>';
-            $day_of_week = 0;
+            $months[$mon] = strftime('%B',gmmktime(0,0,0,$mon,1,$year));
         }
-        $output .= '<td'
-                .  ( ($count > 0) ? ' class="has_data"' : '' )
-                .  '><strong>'.$day.'</strong><br />'.$count.'</td>'
-                ;
-        $day_of_week += 1;
-    }
 
-    if($day_of_week < 7)
-        $output .='<td colspan="'.(7-$day_of_week).'" class="after">&nbsp;</td>';
-    $output .= '</tr>';
+        foreach(range(1,$days) as $day)
+        {
+            $date  = new DateTime($day.'.'.$month.'.'.$year);
+            $items = BCStats_Statistics::ArrayFilterByKey($visitors, 'date', $date->format('Y-m-d'));
+            if(is_array($items) && count($items))
+            {
+                $set[$day] = $items[0]['count'];
+            }
+            else
+            {
+                $set[$day] = 0;
+            }
+        }
 
-    if(CAT_Helper_Validate::sanitizeGet('_cat_ajax'))
-    {
-        echo json_encode(array('type'=>'table','content'=>$output));
-        exit();
+        $chart    = NULL;
+        $output   = NULL;
+        $settings = BCStats_Statistics::getSettings();
+
+        if($settings['show_charts'] == 'Y')
+        {
+            require_once CAT_PATH.'/modules/lib_chartjs/inc/Chart.php';
+            $chart = '        <span class="monthname">'.CAT_Helper_I18n::getInstance()->translate(strftime('%B',time())).' '.$year.'</span><br />'
+                       . lib_chartjs_Chart::getLinechart(
+                             array(
+                                 'data'        => array('datasets'=>array('Visitors'=>$set)),
+                                 'id'          => 'visitorsChart',
+                                 'labels'      => $labels,
+                                 'color_scale' => $settings['chroma_scale'],
+                                 'type'        => 'line'
+                             ));
+            if(CAT_Helper_Validate::sanitizeGet('_cat_ajax'))
+            {
+                echo json_encode(array('type'=>'chart','content'=>$chart));
+                exit();
+            }
+        }
+        else
+        {
+            // Sunday is 0, so we do some math for Monday as first day of week
+            $weekday = ($weekday + 7 - 1) % 7;
+
+            $output = '<tr>';
+            if($weekday >= 1 )
+                $output .= '<td colspan="'.$weekday.'" class="before">&nbsp;</td>';
+            $day_of_week = $weekday;
+
+            foreach($set as $day => $count)
+            {
+                if($day_of_week == 7)
+                {
+                    $output .= '</tr><tr>';
+                    $day_of_week = 0;
+                }
+                $output .= '<td'
+                        .  ( ($count > 0) ? ' class="has_data"' : '' )
+                        .  '><strong>'.$day.'</strong><br />'.$count.'</td>'
+                        ;
+                $day_of_week += 1;
+            }
+
+            if($day_of_week < 7)
+                $output .='<td colspan="'.(7-$day_of_week).'" class="after">&nbsp;</td>';
+            $output .= '</tr>';
+
+            if(CAT_Helper_Validate::sanitizeGet('_cat_ajax'))
+            {
+                echo json_encode(array('type'=>'table','content'=>$output));
+                exit();
+            }
+        }
+
+        $parser->setPath(dirname(__FILE__).'/../templates/default');
+        return $parser->get('visitors_per_month.tpl',array(
+            'chart'     => $chart,
+            'years'     => $years,
+            'months'    => $months,
+            'calsheet'  => $output,
+            'monthname' => strftime('%B',time()),
+            'year'      => $year
+        ));
     }
 }
 
+if( CAT_Helper_Addons::versionCompare(CAT_VERSION,'1.2','<') )
+{
+    $widget_name = CAT_Helper_I18n::getInstance()->translate('Visitors per month');
+    require_once dirname(__FILE__).'/../inc/Statistics.php';
+    BCStats_Statistics::addFooterFiles();
+    echo render_widget_BCStats_visitors_per_month();
+}
 
-
-$parser->setPath(dirname(__FILE__).'/../templates/default');
-$parser->output('visitors_per_month.tpl',array(
-    'chart'     => $chart,
-    'years'     => $years,
-    'months'    => $months,
-    'calsheet'  => $output,
-    'monthname' => strftime('%B',time()),
-    'year'      => $year
-));
+if(isset($_REQUEST['_cat_ajax']))
+    return render_widget_BCStats_visitors_per_month();

@@ -40,29 +40,31 @@
         {$num}: "{$month}"{if not $.foreach.default.last},{/if}
         {/foreach}
     };
-    $('button#widget_visitors_per_month').unbind('click').bind('click', function(event) {
-        event.preventDefault();
-        $.ajax({
-            url: "{$CAT_URL}/modules/BCStats/widgets/visitors_per_month.php",
-            data: {
-                year     : $('#year').val(),
-                month    : $('#month').val(),
-                _cat_ajax: 1
-            },
-            dataType: 'json',
-            success: function(data) {
-                if(data.type == 'table')
-                {
-                    $('tbody').html(data.content);
-                }
-                else
-                {
-                    $('div#widget_visitors_per_month_chart').html(data.content);
-                }
-                $('.monthname').text(
-                    cattranslate( monthnames[ $('#month').val() ], '', '', 'BCStats' ) + ' ' + $('#year').val()
-                );
-            },
+    jQuery(document).ready( function($) {
+        $('button#widget_visitors_per_month').unbind('click').bind('click', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: "{$CAT_URL}/modules/BCStats/widgets/visitors_per_month.php",
+                data: {
+                    year     : $('#year').val(),
+                    month    : $('#month').val(),
+                    _cat_ajax: 1
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if(data.type == 'table')
+                    {
+                        $('tbody').html(data.content);
+                    }
+                    else
+                    {
+                        $('div#widget_visitors_per_month_chart').html(data.content);
+                    }
+                    $('.monthname').text(
+                        cattranslate( monthnames[ $('#month').val() ], '', '', 'BCStats' ) + ' ' + $('#year').val()
+                    );
+                },
+            });
         });
     });
 </script>

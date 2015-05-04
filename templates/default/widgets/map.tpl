@@ -16,73 +16,80 @@
 </div>
 
 <script charset="windows-1250" type="text/javascript">
-    var div    = $('#mod_bcstats_worldmap');
-    var width  = div.width();
+    jQuery(document).ready( function($) {
+        var div    = $('#mod_bcstats_worldmap');
+        var width  = div.width();
+        var map   = kartograph.map('#mod_bcstats_worldmap', width, 'auto');
+        var scale = chroma.scale('{$settings.chroma_scale}');
+        var countries;
 
-    var map   = kartograph.map('#mod_bcstats_worldmap', width, width);
-    var scale = chroma.scale('{$settings.chroma_scale}');
-    var countries;
+        $.fn.qtip.defaults.style.classes = 'qtip-bootstrap';
+        $.fn.qtip.defaults.style.def = false;
 
-    $.fn.qtip.defaults.style.classes = 'qtip-bootstrap';
-    $.fn.qtip.defaults.style.def = false;
-
-    $.getJSON(CAT_URL + '/modules/BCStats/ajax/ajax_get_countries.php', function(countries) {
-        var view  = $('select#map option:selected').val();
-        $.get(CAT_URL + '/modules/BCStats/js/' + view + '.svg', function(svg) {
-            load_map(map,svg,countries);
-        }).complete(function() {
-            $('#mod_bcstats_overlay').hide();
-        });
-        $('select#map').on('change',function() {
-            $('#mod_bcstats_overlay').show();
-            $.get(CAT_URL + '/modules/BCStats/js/' + $(this).val() + '.svg', function(svg) {
-                $('#mod_bcstats_overlay').show('fast',function() {
-                    map.clear();
-                    load_map(map,svg,countries);
-                    $('#mod_bcstats_overlay').hide();
+        $.getJSON(CAT_URL + '/modules/BCStats/ajax/ajax_get_countries.php', function(countries) {
+            var view  = $('select#map option:selected').val();
+            $.get(CAT_URL + '/modules/BCStats/js/' + view + '.svg', function(svg) {
+                load_map(map,svg,countries);
+            }).complete(function() {
+                $('#mod_bcstats_overlay').hide();
+                if(div.height() < $('#mod_bcstats_worldmap').find('svg').height()) {
+                    div.height($('#mod_bcstats_worldmap').find('svg').height());
+                }
+            });
+            $('select#map').on('change',function() {
+                $('#mod_bcstats_overlay').show();
+                $.get(CAT_URL + '/modules/BCStats/js/' + $(this).val() + '.svg', function(svg) {
+                    $('#mod_bcstats_overlay').show('fast',function() {
+                        map.clear();
+                        load_map(map,svg,countries);
+                        $('#mod_bcstats_overlay').hide();
+                        if(div.height() < $('#mod_bcstats_worldmap').find('svg').height()) {
+                            div.height($('#mod_bcstats_worldmap').find('svg').height());
+                        }
+                    });
                 });
             });
         });
-    });
 
-    function load_map(map,svg,countries) {
-        var scale = chroma.scale('{$settings.chroma_scale}').domain(countries, 7, 'quantiles', 'count');
-        map.setMap(svg);
-        map.addLayer('countries', {
-            styles: {
-                'stroke-width': 0.7,
-                stroke: function(d) { // Linien
-                    return '#000';
+        function load_map(map,svg,countries) {
+            var scale = chroma.scale('{$settings.chroma_scale}').domain(countries, 7, 'quantiles', 'count');
+            map.setMap(svg);
+            map.addLayer('countries', {
+                styles: {
+                    'stroke-width': 0.7,
+                    stroke: function(d) { // Linien
+                        return '#000';
+                    },
+                    fill: function(d) {   // Fuellfarbe
+                        if(d.iso.length) {
+                            var iso = d.iso;
+                            if(typeof countries[iso] != 'undefined') {
+                                return scale(countries[iso].count);
+                            }
+                            iso = iso.toLowerCase();
+                            if(typeof countries[iso] != 'undefined') {
+                                return scale(countries[iso].count);
+                            }
+                        }
+                        return chroma('#f0f0f0');
+                    }
                 },
-                fill: function(d) {   // Fuellfarbe
+                tooltips: function(d) {
                     if(d.iso.length) {
                         var iso = d.iso;
                         if(typeof countries[iso] != 'undefined') {
-                            return scale(countries[iso].count);
+                            return [countries[iso].country, countries[iso].count + ' (' + countries[iso].lastseen + ')'];
                         }
                         iso = iso.toLowerCase();
                         if(typeof countries[iso] != 'undefined') {
-                            return scale(countries[iso].count);
+                            return [countries[iso].country, countries[iso].count + ' (' + countries[iso].lastseen + ')'];
                         }
+                        return [d.name, "0"];
                     }
-                    return chroma('#f0f0f0');
                 }
-            },
-            tooltips: function(d) {
-                if(d.iso.length) {
-                    var iso = d.iso;
-                    if(typeof countries[iso] != 'undefined') {
-                        return [countries[iso].country, countries[iso].count + ' (' + countries[iso].lastseen + ')'];
-                    }
-                    iso = iso.toLowerCase();
-                    if(typeof countries[iso] != 'undefined') {
-                        return [countries[iso].country, countries[iso].count + ' (' + countries[iso].lastseen + ')'];
-                    }
-                    return [d.name, "0"];
-                }
-            }
-        });
-    }
+            });
+        }
+    });
 </script>
 
 

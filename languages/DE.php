@@ -46,6 +46,16 @@ $LANG = array(
     'maker' => 'Hersteller',
     'name' => 'Name',
     'version' => 'Version',
+    // month names
+    'January' => 'Januar',
+    'February' => 'Februar',
+    'March' => 'März',
+    'April' => 'April',
+    'May' => 'Mai',
+    'June' => 'Juni',
+    'July' => 'Juli',
+    'October' => 'Oktober',
+    'December' => 'Dezember',
     // Widgets
     'Africa' => 'Afrika',
     'America' => 'Amerika',
@@ -55,13 +65,18 @@ $LANG = array(
     'Choose' => 'Wählen',
     'Devices' => 'Geräte',
     'Europe' => 'Europa',
+    'Last visit' => 'Letzter Aufruf',
     'Loading...' => 'Lade...',
     'Visitors map' => 'Besucherkarte',
-    'Visitors per month' => 'Besucher per Monat',
+    'Visitors per month' => 'Besucher pro Monat',
+    'Visitors per page' => 'Besucher pro Seite',
+    'Visits' => 'Besuche',
     'World' => 'Welt',
     // Settings
     '2 columns' => '2 Spalten',
     '3 columns' => '3 Spalten',
+    'Browscap.ini to use' => 'Zu verwendende browscap.ini',
+    'Chart type' => 'Charttyp',
     'Charts will make the dashboard load slower, but look nicer' => 'Charts machen das Dashboard langsamer, aber auch attraktiver',
     'Chroma scale' => 'Farbschema',
     'Dashboard layout' => 'Dashboard Layout',
@@ -71,12 +86,13 @@ $LANG = array(
     'Reload time' => 'Reloadsperre',
     'Show charts' => 'Charts anzeigen',
     'The settings were saved.' => 'Einstellungen gespeichert.',
-    // month names
-    'January' => 'Januar',
     // Frontend
     'Number of visitors within the last 15 minutes' => 'Anzahl Besucher in den letzten 15 Minuten',
     'Total visitors' => 'Besucher gesamt',
     'Visitors online' => 'Besucher online',
     'Visitors today' => 'Besucher heute',
     'Visitors yesterday' => 'Besucher gestern',
+
+    // !!!!! only for BC < v1.2 !!!!!
+    'To change the settings, use the BCStats Admin Tool!' => 'Zum Ändern der Einstellungen bitte das BCStats Admin Tool aufrufen!',
 );

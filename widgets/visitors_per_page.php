@@ -39,13 +39,48 @@ if (defined('CAT_PATH')) {
     if (!$inc) trigger_error(sprintf("[ <b>%s</b> ] Can't include class.secure.php!", $_SERVER['SCRIPT_NAME']), E_USER_ERROR);
 }
 
-if( CAT_Helper_Addons::versionCompare(CAT_VERSION,'1.2','<') )
+$widget_settings = array(
+    'allow_global_dashboard' => true,
+    'widget_title'           => CAT_Helper_I18n::getInstance()->translate('Visitors per page'),
+    'preferred_column'       => 1
+);
+
+if(!function_exists('render_widget_BCStats_visitors_per_page'))
 {
-    echo 'Sorry, this widget requires BlackCat CMS v1.2';
-    return;
+    function render_widget_BCStats_visitors_per_page()
+    {
+        global $parser;
+        require_once dirname(__FILE__).'/../inc/Statistics.php';
+
+        $db       = CAT_Helper_DB::getInstance();
+        $lang     = CAT_Helper_I18n::getInstance();
+        $year     = CAT_Helper_Validate::sanitizeGet('year')  ?: date('Y');
+
+        $visitors = $db->query(
+            'SELECT `t1`.`page_id`, `t1`.`count`, `t1`.`lastseen`, `t2`.`menu_title` AS `title`, `t2`.`link` FROM `:prefix:mod_bcstats_pages` AS `t1` '.
+            'LEFT OUTER JOIN `:prefix:pages` AS `t2` '.
+            'ON `t1`.`page_id`=`t2`.`page_id` '.
+            'WHERE `year`=? ORDER BY `count` DESC, `t1`.`page_id` ASC',
+            array($year)
+        )->fetchAll();
+
+        if(count($visitors))
+        {
+            foreach($visitors as &$item)
+            {
+                $item['lastseen'] = CAT_Helper_DateTime::getDateTime($item['lastseen']);
+            }
+        }
+
+        $parser->setPath(dirname(__FILE__).'/../templates/default');
+        return $parser->get('visitors_per_page.tpl',array('visitors'=>$visitors));
+    }
 }
 
-$widget_config = array(
-    'allow_global_dashboard' => true,
-    'layout'                 => '33-33-33',
-);
+if( CAT_Helper_Addons::versionCompare(CAT_VERSION,'1.2','<') )
+{
+    $widget_name = CAT_Helper_I18n::getInstance()->translate('Visitors per page');
+    require_once dirname(__FILE__).'/../inc/Statistics.php';
+    BCStats_Statistics::addFooterFiles();
+    echo render_widget_BCStats_visitors_per_page();
+}

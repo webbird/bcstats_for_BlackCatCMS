@@ -40,15 +40,26 @@ if (defined('CAT_PATH')) {
 }
 
 $widget_settings = array(
-    'allow_global_dashboard' => false,
+    'allow_global_dashboard' => true,
     'widget_title'           => CAT_Helper_I18n::getInstance()->translate('Visitors map'),
     'preferred_column'       => 3
 );
 
-global $parser;
-require_once dirname(__FILE__).'/../inc/Statistics.php';
+if(!function_exists('render_widget_BCStats_map'))
+{
+    function render_widget_BCStats_map() {
+        global $parser;
+        require_once dirname(__FILE__).'/../inc/Statistics.php';
+        $tpl_data['settings'] = BCStats_Statistics::getSettings();
+        $parser->setPath(dirname(__FILE__).'/../templates/default');
+            return $parser->get('map.tpl',$tpl_data);
+    }
+}
 
-$tpl_data['settings'] = BCStats_Statistics::getSettings();
-
-$parser->setPath(dirname(__FILE__).'/../templates/default');
-$parser->output('map.tpl',$tpl_data);
+if( CAT_Helper_Addons::versionCompare(CAT_VERSION,'1.2','<') )
+{
+    $widget_name = CAT_Helper_I18n::getInstance()->translate('Visitors map');
+    require_once dirname(__FILE__).'/../inc/Statistics.php';
+    BCStats_Statistics::addFooterFiles();
+    echo render_widget_BCStats_map();
+}

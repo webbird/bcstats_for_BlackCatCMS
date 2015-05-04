@@ -41,14 +41,6 @@ if (defined('CAT_PATH')) {
 
 $mod_headers = array(
     'backend' => array(
-        'js' => array(
-            '/modules/lib_chartjs/js/Chart.js',
-            '/modules/BCStats/js/legend.js',
-            '/modules/BCStats/js/raphael.min.js',
-            '/modules/BCStats/js/kartograph.min.js',
-            '/modules/BCStats/js/chroma.min.js',
-            '/modules/BCStats/js/qtip2.min.js',
-        ),
         'css' => array(
             array('file'=>'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css'),
             array('file'=>'/modules/BCStats/css/qtip2.min.css')

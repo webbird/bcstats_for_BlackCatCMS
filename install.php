@@ -39,6 +39,7 @@ if (defined('CAT_PATH')) {
     if (!$inc) trigger_error(sprintf("[ <b>%s</b> ] Can't include class.secure.php!", $_SERVER['SCRIPT_NAME']), E_USER_ERROR);
 }
 
+// import database structure
 sqlImport(file_get_contents(dirname(__FILE__).'/install/structure.sql'),'%prefix%',CAT_TABLE_PREFIX);
 
 // add files to class_secure
@@ -46,6 +47,7 @@ $addons_helper = new CAT_Helper_Addons();
 foreach(
 	array(
 		'ajax/ajax_get_countries.php',
+        'widgets/visitors_per_month.php'
 	)
 	as $file
 ) {
@@ -54,6 +56,12 @@ foreach(
 		 error_log( "Unable to register file -$file-!" );
     }
 }
+
+// install droplet
+CAT_Helper_Droplet::installDroplet(dirname(__FILE__).'/install/droplet_cat_counter_2015-04-09.zip', CAT_Helper_Directory::sanitizePath(CAT_PATH.'/temp/unzip/') );
+
+// copy browscap.ini to cache folder
+copy(dirname(__FILE__).'/install/basic_php_browscap.ini', CAT_PATH.'/temp/cache/basic_php_browscap.ini');
 
 /**
 * extracts SQL statements from a string and executes them as single

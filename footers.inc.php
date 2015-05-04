@@ -39,13 +39,15 @@ if (defined('CAT_PATH')) {
     if (!$inc) trigger_error(sprintf("[ <b>%s</b> ] Can't include class.secure.php!", $_SERVER['SCRIPT_NAME']), E_USER_ERROR);
 }
 
-if( CAT_Helper_Addons::versionCompare(CAT_VERSION,'1.2','<') )
-{
-    echo 'Sorry, this widget requires BlackCat CMS v1.2';
-    return;
-}
-
-$widget_config = array(
-    'allow_global_dashboard' => true,
-    'layout'                 => '33-33-33',
+$mod_footers = array(
+    'backend' => array(
+        'js' => array(
+            '/modules/lib_chartjs/js/Chart.js',
+            '/modules/BCStats/js/legend.js',
+            '/modules/BCStats/js/raphael.min.js',
+            '/modules/BCStats/js/kartograph.min.js',
+            '/modules/BCStats/js/chroma.min.js',
+            '/modules/BCStats/js/qtip2.min.js',
+        ),
+    ),
 );

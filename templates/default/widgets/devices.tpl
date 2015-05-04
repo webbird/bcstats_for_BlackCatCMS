@@ -1,4 +1,4 @@
-    <div class="fc_widget_content accordion">
+    <div class="fc_widget_content bcstats_accordion">
             {foreach $devices type items}
             <h3><span class="mod_bcstats_left">
                 <span class="devices_sprite {$type}"></span>
