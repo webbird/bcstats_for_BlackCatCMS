@@ -47,6 +47,7 @@ if( CAT_Helper_Addons::versionCompare(CAT_VERSION,'1.2','<') )
 }
 
 $widget_config = array(
-    'allow_global_dashboard' => true,
-    'layout'                 => '33-33-33',
+    'allow_global_dashboard'    => true,
+    'auto_add_global_dashboard' => false,
+    'layout'                    => '33-33-33',
 );

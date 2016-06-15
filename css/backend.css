@@ -22,7 +22,9 @@ html body.fc_gradient1 div#fc_content_container div#fc_main_content div.fc_tool 
 .mod_bcstats .browser_sprite{background:transparent url(sprite.png) left center no-repeat;display:inline-block;width:16px;height:16px;vertical-align:middle;}
 .mod_bcstats .Firefox{background-position:-528px;}
 .mod_bcstats .IE{background-position:-608px;}
-.mod_bcstats .Iron{background-posion:0px;}
+.mod_bcstats .Iron{background-position:0px;}
+.mod_bcstats .Android{background-position:-2496px;}
+.mod_bcstats .Dolfin{background-position:-352px;}
 /* Devices sprite */
 .mod_bcstats .devices_sprite{background:transparent url(devices_sprite.png) left center no-repeat;display:inline-block;width:16px;height:16px;vertical-align:middle;}
 .mod_bcstats .Desktop{background-position:0;}

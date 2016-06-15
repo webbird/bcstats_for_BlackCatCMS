@@ -44,7 +44,7 @@ if (!class_exists('BCStats_Statistics'))
                 self::$vendorpath = CAT_Helper_Directory::sanitizePath(dirname(__FILE__).'/../vendor');
                 set_include_path(get_include_path() . PATH_SEPARATOR . self::$vendorpath);
                 spl_autoload_register(function($class) {
-                    require self::$vendorpath.'/'.$class.'.php';
+                    require self::$vendorpath.'/'.str_replace('\\',DIRECTORY_SEPARATOR,$class).'.php';
                 });
             }
             return self::$instance;
@@ -169,7 +169,7 @@ if (!class_exists('BCStats_Statistics'))
                         // ----- save browser stats -----
                         $sql = 'INSERT INTO `:prefix:mod_bcstats_browsers` ( `year`, `name`, `version`, `maker`, `type`, `count`, `lastseen` ) '
                              . 'VALUES ( ?, ?, ?, ?, ?, "1", ? ) '
-                             . 'ON DUPLICATE KEY UPDATE `count`=`count`+1;';
+                             . 'ON DUPLICATE KEY UPDATE `count`=`count`+1, `lastseen`=?;';
 
                         $db->query($sql,array(
                             strftime('%Y',$line['timestamp']),
@@ -177,13 +177,14 @@ if (!class_exists('BCStats_Statistics'))
                             $ua->version,
                             ( property_exists ($ua,'browser_maker') ? $ua->browser_maker : '-' ),
                             ( property_exists ($ua,'browser_type')  ? $ua->browser_type  : '-' ),
+                            $line['timestamp'],
                             $line['timestamp']
                         ));
 
                         // ----- save device stats -----
                         $sql = 'INSERT INTO `:prefix:mod_bcstats_devices` ( `year`, `type`, `platform`, `win64`, `mobile`, `count`, `lastseen` ) '
                              . 'VALUES ( ?, ?, ?, ?, ?, "1", ? ) '
-                             . 'ON DUPLICATE KEY UPDATE `count`=`count`+1;';
+                             . 'ON DUPLICATE KEY UPDATE `count`=`count`+1, `lastseen`=?;';
 
                         $db->query($sql,array(
                             strftime('%Y',$line['timestamp']),
@@ -191,6 +192,7 @@ if (!class_exists('BCStats_Statistics'))
                             $ua->platform,
                             ( (property_exists ($ua,'win64')          && $ua->win64 )          ? 1 : 0 ),
                             ( (property_exists ($ua,'ismobiledevice') && $ua->ismobiledevice ) ? 1 : 0 ),
+                            $line['timestamp'],
                             $line['timestamp']
                         ));
 
@@ -202,12 +204,13 @@ if (!class_exists('BCStats_Statistics'))
                     // ----- save geo data -----
                     $sql = 'INSERT INTO `:prefix:mod_bcstats_countries` ( `year`, `iso`, `country`, `count`, `lastseen` ) '
                          . 'VALUES ( ?, ?, ?, "1", ? ) '
-                         . 'ON DUPLICATE KEY UPDATE `count`=`count`+1;';
+                         . 'ON DUPLICATE KEY UPDATE `count`=`count`+1, `lastseen`=?;';
 
                     $db->query($sql,array(
                         strftime('%Y',$line['timestamp']),
                         $data['iso'],
                         $data['country'],
+                        $line['timestamp'],
                         $line['timestamp']
                     ));
                 }
@@ -215,13 +218,15 @@ if (!class_exists('BCStats_Statistics'))
                 // ----- page view -----
                 if(isset($data['page_id']))
                 {
-                    $sql = 'INSERT INTO `:prefix:mod_bcstats_pages` ( `year`, `page_id`, `count` ) '
-                         . 'VALUES ( ?, ?, "1" ) '
-                         . 'ON DUPLICATE KEY UPDATE `count`=`count`+1;';
+                    $sql = 'INSERT INTO `:prefix:mod_bcstats_pages` ( `year`, `page_id`, `count`, `lastseen` ) '
+                         . 'VALUES ( ?, ?, "1", ? ) '
+                         . 'ON DUPLICATE KEY UPDATE `count`=`count`+1, `lastseen`=?;';
 
                     $db->query($sql,array(
                         strftime('%Y',$line['timestamp']),
-                        $data['page_id']
+                        $data['page_id'],
+                        $line['timestamp'],
+                        $line['timestamp']
                     ));
                 }
 

@@ -40,9 +40,10 @@ if (defined('CAT_PATH')) {
 }
 
 $widget_settings = array(
-    'allow_global_dashboard' => false,
-    'widget_title'           => CAT_Helper_I18n::getInstance()->translate('Settings'),
-    'preferred_column'       => 1
+    'allow_global_dashboard'    => false,
+    'auto_add_global_dashboard' => false,
+    'widget_title'              => CAT_Helper_I18n::getInstance()->translate('Settings'),
+    'preferred_column'          => 1
 );
 
 if(!function_exists('render_widget_BCStats_settings'))
@@ -51,7 +52,7 @@ if(!function_exists('render_widget_BCStats_settings'))
     {
         // see https://github.com/gka/chroma.js/wiki/Predefined-Colors
         $supported_scales = array(
-            'Spectral', 'Greens', 'Blues', 'Reds', 'Purples', 'Oranges', 'Accent', 'Pastel1', 'Pastel2'
+            'Spectral', 'Greens', 'Blues', 'Reds', 'Purples', 'Oranges', 'Accent', 'Pastel1', 'Pastel2', 'RdYlGn'
         );
 
         $settings    = BCStats_Statistics::getSettings();

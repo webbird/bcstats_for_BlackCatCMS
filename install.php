@@ -58,7 +58,10 @@ foreach(
 }
 
 // install droplet
-CAT_Helper_Droplet::installDroplet(dirname(__FILE__).'/install/droplet_cat_counter_2015-04-09.zip', CAT_Helper_Directory::sanitizePath(CAT_PATH.'/temp/unzip/') );
+CAT_Helper_Droplet::installDroplet(
+    dirname(__FILE__).'/install/droplet_cat_counter.zip',
+    CAT_Helper_Directory::sanitizePath(CAT_PATH.'/temp/unzip/')
+);
 
 // copy browscap.ini to cache folder
 copy(dirname(__FILE__).'/install/basic_php_browscap.ini', CAT_PATH.'/temp/cache/basic_php_browscap.ini');

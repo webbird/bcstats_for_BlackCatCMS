@@ -40,9 +40,10 @@ if (defined('CAT_PATH')) {
 }
 
 $widget_settings = array(
-    'allow_global_dashboard' => true,
-    'widget_title'           => CAT_Helper_I18n::getInstance()->translate('Visitors per page'),
-    'preferred_column'       => 1
+    'allow_global_dashboard'    => true,
+    'auto_add_global_dashboard' => false,
+    'widget_title'              => CAT_Helper_I18n::getInstance()->translate('Visitors per page'),
+    'preferred_column'          => 1
 );
 
 if(!function_exists('render_widget_BCStats_visitors_per_page'))
@@ -60,7 +61,8 @@ if(!function_exists('render_widget_BCStats_visitors_per_page'))
             'SELECT `t1`.`page_id`, `t1`.`count`, `t1`.`lastseen`, `t2`.`menu_title` AS `title`, `t2`.`link` FROM `:prefix:mod_bcstats_pages` AS `t1` '.
             'LEFT OUTER JOIN `:prefix:pages` AS `t2` '.
             'ON `t1`.`page_id`=`t2`.`page_id` '.
-            'WHERE `year`=? ORDER BY `count` DESC, `t1`.`page_id` ASC',
+            'WHERE `year`=? ORDER BY `count` DESC, `t1`.`page_id` ASC '.
+            'LIMIT 30',
             array($year)
         )->fetchAll();
 
@@ -68,7 +70,9 @@ if(!function_exists('render_widget_BCStats_visitors_per_page'))
         {
             foreach($visitors as &$item)
             {
-                $item['lastseen'] = CAT_Helper_DateTime::getDateTime($item['lastseen']);
+                $item['lastseen'] = ( isset($item['lastseen']) && $item['lastseen'] != '' )
+                                  ? CAT_Helper_DateTime::getDateTime($item['lastseen'])
+                                  : '-';
                 $item['link']     = CAT_Helper_Page::getLink($item['page_id']);
             }
         }

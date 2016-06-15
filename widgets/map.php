@@ -40,9 +40,10 @@ if (defined('CAT_PATH')) {
 }
 
 $widget_settings = array(
-    'allow_global_dashboard' => true,
-    'widget_title'           => CAT_Helper_I18n::getInstance()->translate('Visitors map'),
-    'preferred_column'       => 3
+    'allow_global_dashboard'    => true,
+    'auto_add_global_dashboard' => false,
+    'widget_title'              => CAT_Helper_I18n::getInstance()->translate('Visitors map'),
+    'preferred_column'          => 3
 );
 
 if(!function_exists('render_widget_BCStats_map'))

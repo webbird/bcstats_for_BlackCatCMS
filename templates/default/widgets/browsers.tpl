@@ -1,3 +1,4 @@
+    {if $browsers}
     <div class="fc_widget_content bcstats_accordion">
         {foreach $browsers group data}
         <h3>
@@ -15,3 +16,6 @@
         {/foreach}
     </div>
     {$chart}
+    {else}
+    {translate('No data')}
+    {/if}

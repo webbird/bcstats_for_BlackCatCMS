@@ -42,12 +42,6 @@ if (defined('CAT_PATH')) {
 $mod_footers = array(
     'backend' => array(
         'js' => array(
-            '/modules/lib_chartjs/js/Chart.js',
-            '/modules/BCStats/js/legend.js',
-            '/modules/BCStats/js/raphael.min.js',
-            '/modules/BCStats/js/kartograph.min.js',
-            '/modules/BCStats/js/chroma.min.js',
-            '/modules/BCStats/js/qtip2.min.js',
         ),
     ),
 );

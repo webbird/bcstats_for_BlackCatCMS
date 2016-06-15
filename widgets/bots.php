@@ -40,9 +40,10 @@ if (defined('CAT_PATH')) {
 }
 
 $widget_settings = array(
-    'allow_global_dashboard' => true,
-    'widget_title'           => CAT_Helper_I18n::getInstance()->translate('Bots and Crawlers'),
-    'preferred_column'       => 3
+    'allow_global_dashboard'    => true,
+    'auto_add_global_dashboard' => false,
+    'widget_title'              => CAT_Helper_I18n::getInstance()->translate('Bots and Crawlers'),
+    'preferred_column'          => 3
 );
 
 if(!function_exists('render_widget_BCStats_bots'))
@@ -53,42 +54,46 @@ if(!function_exists('render_widget_BCStats_bots'))
         require_once dirname(__FILE__).'/../inc/Statistics.php';
 
         $db       = CAT_Helper_DB::getInstance();
+        $result   = NULL;
+        $chart    = NULL;
         $browsers = $db->query(
             'SELECT * FROM `:prefix:mod_bcstats_browsers` WHERE `year`=YEAR(NOW()) AND `type`=? ORDER BY `count` DESC, `name` ASC, `version` DESC',
             array('Bot/Crawler')
         )->fetchAll();
 
-        $chart    = NULL;
-        $settings = BCStats_Statistics::getSettings();
-
-        require_once CAT_PATH.'/modules/lib_chartjs/inc/Chart.php';
-        $result = lib_chartjs_Chart::prepareData(
-            array(
-                'data'     => $browsers,
-                'group_by' => 'name',
-                'converts' => array(
-                    'lastseen'  => 'CAT_Helper_DateTime::getDateTime'
-                ),
-                'internals' => array(
-                    'summarize' => array( 'key' => 'count', 'return_as' => 'sum' ),
-                    'title'     => array( 'key' => 'name', 'additionals' => array('maker') )
-                )
-            )
-        );
-
-        if($settings['show_charts'] == 'Y')
+        if(count($browsers))
         {
-            $type  = $settings['charttype'];
-            $func  = 'get'.ucfirst($type).'chart';
-            $chart = lib_chartjs_Chart::$func(
+            $settings = BCStats_Statistics::getSettings();
+
+            require_once CAT_PATH.'/modules/lib_chartjs/inc/Chart.php';
+            $result = lib_chartjs_Chart::prepareData(
                 array(
-                    'data'        => $result,
-                    'id'          => 'botChart',
-                    'color_scale' => $settings['chroma_scale'],
-                    'color_by'    => 'count',
-                    'group_by'    => 'name',
+                    'data'     => $browsers,
+                    'group_by' => 'name',
+                    'converts' => array(
+                        'lastseen'  => 'CAT_Helper_DateTime::getDateTime'
+                    ),
+                    'internals' => array(
+                        'summarize' => array( 'key' => 'count', 'return_as' => 'sum' ),
+                        'title'     => array( 'key' => 'name', 'additionals' => array('maker') )
+                    )
                 )
             );
+
+            if($settings['show_charts'] == 'Y')
+            {
+                $type  = $settings['charttype'];
+                $func  = 'get'.ucfirst($type).'chart';
+                $chart = lib_chartjs_Chart::$func(
+                    array(
+                        'data'        => $result,
+                        'id'          => 'botChart',
+                        'color_scale' => $settings['chroma_scale'],
+                        'color_by'    => 'count',
+                        'group_by'    => 'name',
+                    )
+                );
+            }
         }
 
         $parser->setPath(dirname(__FILE__).'/../templates/default');

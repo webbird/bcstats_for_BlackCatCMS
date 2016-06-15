@@ -61,8 +61,8 @@ CREATE TABLE IF NOT EXISTS `cat_mod_bcstats_pages` (
 
 INSERT INTO `cat_mod_bcstats_settings` (`id`, `set_name`, `set_content`) VALUES (2, 'reload_time', '3600');
 INSERT INTO `cat_mod_bcstats_settings` (`id`, `set_name`, `set_content`) VALUES (3, 'show_charts', 'Y');
-INSERT INTO `cat_mod_bcstats_settings` (`id`, `set_name`, `set_content`) VALUES (4, 'preferred_layout', '50-50');
+INSERT INTO `cat_mod_bcstats_settings` (`id`, `set_name`, `set_content`) VALUES (4, 'preferred_layout', '33-33-33');
 INSERT INTO `cat_mod_bcstats_settings` (`id`, `set_name`, `set_content`) VALUES (5, 'map_view', 'europe');
-INSERT INTO `cat_mod_bcstats_settings` (`id`, `set_name`, `set_content`) VALUES (6, 'chroma_scale', 'Spectral');
+INSERT INTO `cat_mod_bcstats_settings` (`id`, `set_name`, `set_content`) VALUES (6, 'chroma_scale', 'RdYlGn');
 INSERT INTO `cat_mod_bcstats_settings` (`id`, `set_name`, `set_content`) VALUES (7, 'charttype', 'pie');
 INSERT INTO `cat_mod_bcstats_settings` (`id`, `set_name`, `set_content`) VALUES (8, 'browscapini', 'basic');

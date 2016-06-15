@@ -44,7 +44,7 @@ if (!class_exists('BCStats_Tracker'))
                 self::$vendorpath = CAT_Helper_Directory::sanitizePath(dirname(__FILE__).'/../vendor');
                 set_include_path(get_include_path() . PATH_SEPARATOR . self::$vendorpath);
                 spl_autoload_register(function($class) {
-                    require self::$vendorpath.'/'.$class.'.php';
+                    require self::$vendorpath.'/'.str_replace('\\',DIRECTORY_SEPARATOR,$class).'.php';
                 });
             }
             return self::$instance;

@@ -40,9 +40,10 @@ if (defined('CAT_PATH')) {
 }
 
 $widget_settings = array(
-    'allow_global_dashboard' => true,
-    'widget_title'           => CAT_Helper_I18n::getInstance()->translate('Visitors per month'),
-    'preferred_column'       => 1
+    'allow_global_dashboard'    => true,
+    'auto_add_global_dashboard' => false,
+    'widget_title'              => CAT_Helper_I18n::getInstance()->translate('Visitors per month'),
+    'preferred_column'          => 1
 );
 
 if(!function_exists('render_widget_BCStats_visitors_per_month'))
