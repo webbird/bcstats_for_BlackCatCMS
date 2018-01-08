@@ -23,28 +23,12 @@
  *
  */
 
-if (defined('CAT_PATH')) {
-    if (defined('CAT_VERSION')) include(CAT_PATH.'/framework/class.secure.php');
-} elseif (file_exists($_SERVER['DOCUMENT_ROOT'].'/framework/class.secure.php')) {
-    include($_SERVER['DOCUMENT_ROOT'].'/framework/class.secure.php');
-} else {
-    $subs = explode('/', dirname($_SERVER['SCRIPT_NAME']));    $dir = $_SERVER['DOCUMENT_ROOT'];
-    $inc = false;
-    foreach ($subs as $sub) {
-        if (empty($sub)) continue; $dir .= '/'.$sub;
-        if (file_exists($dir.'/framework/class.secure.php')) {
-            include($dir.'/framework/class.secure.php'); $inc = true;    break;
-        }
-    }
-    if (!$inc) trigger_error(sprintf("[ <b>%s</b> ] Can't include class.secure.php!", $_SERVER['SCRIPT_NAME']), E_USER_ERROR);
-}
-
 $module_name = "BlackCat CMS Visitor Statistics";
 $module_directory = "BCStats";
 $module_type = "module";
 $module_function = "tool";
 $module_description = "BlackCat CMS Visitor Statistics";
-$module_version = "0.7";
+$module_version = "0.8";
 $module_platform = "1.x";
 $module_author = "Black Cat Development";
 $module_guid = "F48EAF3C-4D2F-503C-36A7-FAEF3BF3A0A0";
