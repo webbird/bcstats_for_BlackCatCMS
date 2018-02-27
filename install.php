@@ -39,6 +39,9 @@ if (defined('CAT_PATH')) {
     if (!$inc) trigger_error(sprintf("[ <b>%s</b> ] Can't include class.secure.php!", $_SERVER['SCRIPT_NAME']), E_USER_ERROR);
 }
 
+// try to extend execution time
+ini_set('max_execution_time',1200);
+
 // import database structure
 sqlImport(file_get_contents(dirname(__FILE__).'/install/structure.sql'),'%prefix%',CAT_TABLE_PREFIX);
 

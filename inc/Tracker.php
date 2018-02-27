@@ -209,7 +209,7 @@ if (!class_exists('BCStats_Tracker'))
             }
             catch ( Exception $e ) {}
 
-            if($record)
+            if($record && is_object($record))
             {
                 $country  = isset($record->country->names[strtolower(LANGUAGE)])
                           ? $record->country->names[strtolower(LANGUAGE)]
@@ -236,9 +236,8 @@ if (!class_exists('BCStats_Tracker'))
                     ));
 
                 }
-
-                return $result;
             }
+                return $result;
         }   // end function resolveGeoData()
         
 
